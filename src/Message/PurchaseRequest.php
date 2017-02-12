@@ -50,10 +50,12 @@ class PurchaseRequest extends AbstractRequest
     {
         $this->validate('amount', 'account', 'transactionId');
 
+        $yandexComission = $this->calculateComissionValue($this->getAmount());
+        $amountToPay = floatval($this->getAmount()) + floatval($yandexComission);
 
         $data = [
             'receiver' => $this->getAccount(),
-            'sum' => $this->getAmount(),
+            'sum' => $amountToPay,
             'label' => $this->getTransactionId(),
             'formcomment' => $this->getDescription(),
             'short-dest' => $this->getDescription(),
@@ -70,4 +72,14 @@ class PurchaseRequest extends AbstractRequest
     {
         return $this->response = new PurchaseResponse($this, $data);
     }
+
+    protected function calculateComissionValue($amount)
+    {
+        $comission = ($amount * 0.5) / 100;
+        $comission = $comission * 100;
+        $comission = ceil($comission);
+        $comission = $comission / 100;
+        return $comission;
+    }
+
 }
