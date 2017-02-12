@@ -1,17 +1,20 @@
 <?php
 
-namespace yandexmoney\YandexMoney\Message;
+namespace Omnipay\YandexMoney\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
+use Omnipay\Common\Message\RedirectResponseInterface;
 
-/**
- * YandexMoney Complete Purchase Response
- */
-class CompletePurchaseResponse extends AbstractResponse
+class CompletePurchaseResponse extends AbstractResponse implements RedirectResponseInterface
 {
     public function isSuccessful()
     {
-        return ($this->data['code'] === 0);
+        return true;
+    }
+
+    public function isCancelled()
+    {
+        return false;
     }
 
     public function isRedirect()
@@ -19,17 +22,33 @@ class CompletePurchaseResponse extends AbstractResponse
         return false;
     }
 
+    public function getRedirectUrl()
+    {
+        return null;
+    }
+
+    public function getRedirectMethod()
+    {
+        return null;
+    }
+
+    public function getRedirectData()
+    {
+        return null;
+    }
+
+    public function getTransactionId()
+    {
+        return intval($this->data['label']);
+    }
+
+    public function getAmount()
+    {
+        return floatval($this->data['amount']);
+    }
+
     public function getMessage()
     {
-      $xmlMessage  = '<?xml version="1.0" encoding="UTF-8"?>';
-	  $xmlMessage .= '<paymentAvisoResponse performedDatetime="' . date("c") . '" '
-				   . 'code="' . $this->data['code'] . '" '
-				   . 'invoiceId="' . $this->data['invoiceId'] .'" '
-				   . 'shopId="'.$this->data['shopId'] . '"/>';
-	  return $xmlMessage;
-	}
-
-	 public function getTransactionReference(){
-		return $this->data['orderNumber'];
-	 }
+        return null;
+    }
 }

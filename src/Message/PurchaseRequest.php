@@ -1,165 +1,69 @@
 <?php
 
-namespace yandexmoney\YandexMoney\Message;
+namespace Omnipay\YandexMoney\Message;
 
-/**
- * YandexMoney Purchase Request
- */
-class PurchaseRequest extends \Omnipay\Common\Message\AbstractRequest
+use Omnipay\Common\Message\AbstractRequest;
+
+class PurchaseRequest extends AbstractRequest
 {
-	
-    public function getPassword()
+    public function getAccount()
     {
-        return $this->getParameter('password');
+        return $this->getParameter('account');
     }
 
-    public function setPassword($value)
+    public function setAccount($value)
     {
-        return $this->setParameter('password', $value);
+        return $this->setParameter('account', $value);
     }
 
-    public function getMethod()
+    public function getLabel()
     {
-        return $this->getParameter('method');
+        return $this->getParameter('label');
     }
 
-	public function setMethod($value)
+    public function setLabel($value)
     {
-        return $this->setParameter('method', $value);
-    }
-	
-	public function getCustomerNumber()
-    {
-        return $this->getParameter('customerNumber');
+        return $this->setParameter('label', $value);
     }
 
-	public function setCustomerNumber($value)
+    public function getPaymentType()
     {
-        return $this->setParameter('customerNumber', $value);
-    }
-	
-    public function getOrderNumber()
-    {
-        return $this->getParameter('orderNumber');
+        return $this->getParameter('paymentType');
     }
 
-	public function setOrderNumber($value)
+    public function setPaymentType($value)
     {
-        return $this->setParameter('orderNumber', $value);
+        return $this->setParameter('paymentType', $value);
     }
 
-	public function getOrderId()
+    public function getQuickpayForm()
     {
-        return $this->getParameter('orderId');
-    }
-	public function setOrderId($value)
-    {
-        return $this->setParameter('orderId', $value);
-    }
-	public function getShopId()
-    {
-        return $this->getParameter('shopid');
+        return $this->getParameter('quickpayForm');
     }
 
-    public function setShopId($value)
+    public function setQuickpayForm($value)
     {
-        return $this->setParameter('shopid', $value);
+        return $this->setParameter('quickpayForm', $value);
     }
 
-	public function getScid()
-    {
-        return $this->getParameter('scid');
-    }
-
-    public function setScid($value)
-    {
-        return $this->setParameter('scid', $value);
-    }
-
-	public function getCurrencyNum()
-    {
-        return $this->getParameter('currencyNum');
-    }
-
-    public function setCurrencyNum($value)
-    {
-        return $this->setParameter('currencyNum', $value);
-    }
-
-	public function getAction()
-	{
-		 return $this->getParameter('action');
-	}
-	public function setAction($value)
-	{
-		return $this->setParameter('action', $value);
-	}
-	
-
-	public function getOrderSumAmount()
-	{
-		 return $this->getParameter('orderSumAmount');
-	}
-	public function getOrderSumCurrencyPaycash()
-	{
-		 return $this->getParameter('orderSumCurrencyPaycash');
-	}
-	public function getOrderSumBankPaycash()
-	{
-		 return $this->getParameter('orderSumBankPaycash');
-	}
-	
-	public function setOrderSumAmount($value)
-	{
-		 return $this->setParameter('orderSumAmount', $value);
-	}
-	public function setOrderSumCurrencyPaycash($value)
-	{
-		 return $this->setParameter('orderSumCurrencyPaycash', $value);
-	}
-	public function setOrderSumBankPaycash($value)
-	{
-		 return $this->setParameter('orderSumBankPaycash', $value);
-	}
-
-	public function getInvoiceId()
-	{
-		return $this->getParameter('invoiceId');
-	}
-	public function setInvoiceId($value)
-	{
-		return $this->setParameter('invoiceId', $value);
-	}
-	public function getMd5()
-	{
-		 return $this->getParameter('md5');
-	}
-	public function setMd5($value)
-	{
-		return $this->setParameter('md5', $value);
-	}
-	
-	
     public function getData()
     {
-		$this->validate('shopid', 'scid', 'customerNumber', 'amount', 'orderId', 
-						'method', 'returnUrl', 'cancelUrl');
+        $this->validate('amount', 'account', 'transactionId');
 
-			
-        $data = array();
-		$data['scid'] = $this->getScid();
-		$data['shopid'] = $this->getShopId();
-		$data['customerNumber'] = $this->getCustomerNumber();
-		$data['orderNumber'] = $this->getOrderId();
-		$data['sum'] = $this->getAmount();
-		$data['orderSumCurrencyPaycash'] = $this->getCurrencyNum();
 
-		$data['paymentType'] = $this->getMethod();	
+        $data = [
+            'receiver' => $this->getAccount(),
+            'sum' => $this->getAmount(),
+            'label' => $this->getTransactionId(),
+            'formcomment' => $this->getDescription(),
+            'short-dest' => $this->getDescription(),
+            'comment' => $this->getDescription(),
+            'paymentType' => $this->getPaymentType(),
+            'quickpay-form' => $this->getQuickpayForm(),
+            'targets' => $this->getTransactionId(),
+        ];
 
-		$data['shopSuccessURL'] = $this->getReturnUrl();
-		$data['shopFailURL'] = $this->getCancelUrl();
-		
-		return $data;
+        return $data;
     }
 
     public function sendData($data)
