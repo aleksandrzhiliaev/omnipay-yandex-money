@@ -47,6 +47,11 @@ class CompletePurchaseResponse extends AbstractResponse implements RedirectRespo
         return floatval($this->data['amount']);
     }
 
+    public function getCurrency()
+    {
+        return 'RUB';
+    }
+
     public function getMessage()
     {
         return null;
